@@ -3,6 +3,8 @@ import { RadioGroup } from "./common";
 import { Modal } from "./Modal";
 import { GENDERS, GenderOptions } from "./constant";
 import { ErrorBoundary } from "./ErrorBoundary";
+import style from "./app.module.css";
+import "./style.css";
 
 export class App extends React.Component {
   state = {
@@ -11,20 +13,22 @@ export class App extends React.Component {
     isModalVisible: false,
     getNews: true,
     gender: GENDERS.MAN,
+    errorLogin: "",
+    errorPassword: "",
   };
-
-  componentDidMount() {
-    const body = document.querySelector('body')
-    body.onkeypress = (event)=>{
-      if(event.keyCode === 27){
-        this.modalCloseHandler()
-        console.log('ss')
-      }
+  keyPressHandler = (event) => {
+    if (event.keyCode === 27) {
+      this.modalCloseHandler();
+      console.log("ss");
     }
+  };
+  componentDidMount() {
+    const body = document.querySelector("body");
+    body.addEventListener("keyup", this.keyPressHandler);
   }
   componentWillUnmount() {
-    const body = document.querySelector('body')
-
+    const body = document.querySelector("body");
+    body.removeEventListener("keyup", this.keyPressHandler);
   }
 
   FindGenderLabel = () => {
@@ -40,48 +44,68 @@ export class App extends React.Component {
   };
   handleRegistrationBtn = () => {
     if (this.state.login.length < 5) {
-      return (<span>Минимальная длина поля 5 символов</span>)
+      this.setState({ errorLogin: "Минимальная длина поля 5 символов" });
+    } else {
+      this.setState({ errorLogin: "" });
     }
     if (this.state.password.length < 5) {
-      return (<span>Минимальная длина поля 5 символов</span>)
+      this.setState({ errorPassword: "Минимальная длина поля 5 символов" });
+    } else {
+      this.setState({ errorPassword: "" });
     }
-    else if(this.state.login.length >= 5 && this.state.password.length >= 5){
-      this.setState({ isModalVisible: true });
+    if (this.state.login.length >= 5 && this.state.password.length >= 5) {
+      this.setState({
+        isModalVisible: true,
+      });
     }
   };
   handleCheckbox = () => {
     this.setState({ getNews: !this.state.getNews });
   };
   modalCloseHandler = () => {
-    this.setState({ isModalVisible: false }) };
+    this.setState({ isModalVisible: false });
+  };
   toggleGender = (event) => {
     this.setState({ gender: event.target.value });
   };
 
   render() {
-    const { login, password, isModalVisible, getNews, gender } = this.state;
+    const {
+      login,
+      password,
+      isModalVisible,
+      getNews,
+      gender,
+      errorLogin,
+      errorPassword,
+    } = this.state;
 
     return (
-      <div className="App">
-        <form action="">
+      <div className={style.wrapper}>
+        <span className={style.title}>Зарегистрироваться</span>
+        <form action="" className={style.form}>
           <input
             placeholder="Логин"
             type="text"
             value={login}
             onChange={this.handleInputName}
+            className={style.inputform}
           />
+          {errorLogin && <span>{errorLogin}</span>}
           <input
             placeholder="Пароль"
             type="password"
             value={password}
             onChange={this.handleInputPassword}
+            className={style.inputform}
           />
+          {errorPassword && <span>{errorPassword}</span>}
           <RadioGroup
             options={GenderOptions}
             value={gender}
             onChange={this.toggleGender}
           />
-          <div>
+          <div className={style.getnews}>
             Подписаться на новости
             <input
               type="checkbox"
@@ -89,8 +113,12 @@ export class App extends React.Component {
               checked={getNews}
             />
           </div>
-          <button type="button" onClick={this.handleRegistrationBtn}>
-            Зарегестрироваться
+          <button
+            type="button"
+            onClick={this.handleRegistrationBtn}
+            className={style.submitbtn}
+          >
+            Зарегистрироваться
           </button>
         </form>
         <ErrorBoundary>

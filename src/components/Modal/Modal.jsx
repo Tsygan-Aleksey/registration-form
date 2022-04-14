@@ -6,11 +6,13 @@ export const Modal = (props) => {
   const Modal = (
     <div className="modal">
       <span>Вы успешно зарегестрировались</span>
-      <span>{props.login}</span>
-      <span>{props.password}</span>
-      <span>Пол {props.gender}</span>
-      <button type="button" onClick={props.onClick} onClose={props.onClose}>OK</button>
+      <span> Логин: {props.login}</span>
+      <span>Пароль: {props.password}</span>
+      <span>Пол: {props.gender}</span>
       {props.getNews && <span>Вы подписались на новости</span>}
+      <button type="button" onClick={props.onClick} onClose={props.onClose}>
+        OK
+      </button>
     </div>
   );
   return ReactDOM.createPortal(Modal, body);
